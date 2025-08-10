@@ -1,0 +1,67 @@
+package com.why.craft;
+
+import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+    private GameView gameView;
+    private JoystickView joystick;
+    private Player player;
+    private World world;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        gameView = findViewById(R.id.gameView);
+        joystick = findViewById(R.id.joystick);
+        Button btnJump = findViewById(R.id.btnJump);
+        FrameLayout miningArea = findViewById(R.id.miningArea);
+
+        // Wait for renderer initialization
+        gameView.post(() -> {
+            GameRenderer renderer = (GameRenderer) gameView.getRenderer();
+            player = renderer.getPlayer();  // Now using the getter
+            world = renderer.getWorld();    // Now using the getter
+        });
+
+        // Movement controls
+        joystick.setMovementListener((dx, dy) -> {
+            player.moveForward = dy < -0.5;
+            player.moveBackward = dy > 0.5;
+            player.moveLeft = dx < -0.5;
+            player.moveRight = dx > 0.5;
+        });
+
+        // Jump action
+        btnJump.setOnClickListener(v -> player.jump = true);
+
+        // Mining interaction
+        miningArea.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                int blockX = (int) (player.x + player.lookX);
+                int blockY = (int) (player.y + player.lookY);
+                int blockZ = (int) (player.z + player.lookZ);
+                world.setBlock(blockX, blockY, blockZ, Block.AIR);
+            }
+            return true;
+        });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        gameView.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        gameView.onResume();
+    }
+      }
