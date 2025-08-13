@@ -1,6 +1,6 @@
 # WhyCraft
 
-**WhyCraft** – Creative Java Game Engine for Android
+**WhyCraft** – Creative Java Game for Mobile.
 
 **Repository:** [WhyCraft on GitHub](https://github.com/Skyro7777777/WhyCraft)
 
